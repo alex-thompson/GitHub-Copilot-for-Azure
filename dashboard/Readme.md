@@ -101,9 +101,9 @@ Data flow:
 - The integration test pipelines upload that data **directly** to an Azure Table by
   running `npm run upload:token-usage` (`tests/scripts/upload-token-usage.ts`). One
   row is stored **per test, per branch, per run** in the `integrationtokenusage`
-  table on the integration-reports storage account. This runs in
-  `test-all-integration.yml` (scheduled + manual) and in `test-azure-deploy.yml`
-  whenever its `publish-reports` input is `true` (i.e. on scheduled runs).
+  table on the integration-reports storage account. This runs in both
+  `test-all-integration.yml` and `test-azure-deploy.yml` on scheduled and manual
+  runs alike (whenever `REPORT_STORAGE_ACCOUNT` is configured).
 - The frontend never reads the table directly. It calls the Function App API:
   - `GET /api/token-usage` — rows, with optional `skill`, `test`, `branch` filters.
   - `GET /api/token-usage/filters` — distinct skills / tests / branches.
@@ -128,3 +128,7 @@ npm run dashboard:collect
 ```
 
 The collected data will be saved at `data/latest.json` file. To deploy it to the website, move this file into `dashboard/public/data/latest.json` and redeploy the app. The web app will pick up the data and use it to render the dashboard.
+
+## Custom Container
+
+When viewing integration test results in the dashboard, you can read data from a custom blob container in the configured storage account by adding the `container` query parameter (for example, `?container=<container-name>`). Manual runs of the CI integration test workflow write test results to the `manual-integration-reports` container; to view them, open the dashboard with `?container=manual-integration-reports` (or `&container=manual-integration-reports` if the page already has query parameters).

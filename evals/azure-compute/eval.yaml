@@ -17,10 +17,6 @@ tags:
   type: integration
   skill: azure-compute
 
-environment:
-  skills:
-    - ../../plugin/skills/azure-compute
-
 config:
   runs: 5
   timeout: "10m"
